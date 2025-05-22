@@ -5,6 +5,7 @@ import connectDB from './src/config/db.js';
 import { PORT } from "./src/config/env.js";
 import dotenv from 'dotenv';
 import errorHandler from './src/middlewares/error.middleware.js';
+import galleryItemRouter from "./src/routes/galleryRoute.js";
 
 dotenv.config();
 const app = express();
@@ -18,6 +19,8 @@ app.use(errorHandler);
 
 //Routes
 app.use("/api/users",userRouter);
+
+app.use("/api/gallery",galleryItemRouter);
 
 
 

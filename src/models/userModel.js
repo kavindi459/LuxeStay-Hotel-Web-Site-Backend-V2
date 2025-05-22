@@ -28,6 +28,22 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    type:{
+        type:String,
+        default:"user",
+        required:true
+    },
+    disabled:{
+        type:Boolean,
+        default:false,
+        required:true
+
+    },
+    emailVerified:{
+        type:Boolean,
+        default:false,
+        required:true
+    }
   
     
 },{ timestamps: true })
