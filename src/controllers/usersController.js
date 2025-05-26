@@ -3,32 +3,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import generateToken from "../utils/generateToken.js";
 
-export const getUser = async (req, res) => {
-  try {
-    const users = await User.find();
-    res.status(200).json({
-      success: true,
-      data: users,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch users",
-      error: error.message,
-    });
-  }
-};
-
-// export const createUser = (req, res) => {
-//    const user = req.body;
-//    const newUser =new User(user);
-//    newUser.save().then((result) => {
-//        res.status(201).json(result);
-
-//    }).catch((err) => {
-//        res.status(500).json(err);
-//    })
-// }
 
 export const createUser = async (req, res) => {
   const { firstName, lastName, email, profilePic, phone, password ,role} = req.body;
@@ -117,3 +91,109 @@ export const loginUser = async (req, res) => {
     });
   }
 };
+
+
+
+export const getUser = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json({
+      success: true,
+      data: users,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch users",
+      error: error.message,
+    });
+  }
+};
+
+// export const createUser = (req, res) => {
+//    const user = req.body;
+//    const newUser =new User(user);
+//    newUser.save().then((result) => {
+//        res.status(201).json(result);
+
+//    }).catch((err) => {
+//        res.status(500).json(err);
+//    })
+// }
+
+
+export const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.UserId);
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch user",
+      error: error.message,
+    });
+  }
+};
+
+
+
+export const updateUser =async (req, res) => {
+  try {
+   const user = await User.findById(req.params.UserId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Update user information
+    user.firstName = req.body.firstName || user.firstName;
+    user.lastName = req.body.lastName || user.lastName;
+    user.email = req.body.email || user.email;
+    user.phone = req.body.phone || user.phone;
+    user.profilePic = req.body.profilePic || user.profilePic;
+    user.role = req.body.role || user.role;
+
+    
+   const updateUSer =await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "User updated successfully",
+      data: updateUSer,
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to update user",
+      error: error.message,
+    });
+  }
+
+ 
+ 
+}
+
+
+
+export const deleteUser =async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.params.UserId);
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete user",
+      error: error.message,
+    });
+  }
+}
