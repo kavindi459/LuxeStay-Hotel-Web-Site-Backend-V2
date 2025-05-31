@@ -7,10 +7,17 @@ const bookingSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    // email: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "User",
+    //     required: true
+    // },
+
     email: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
+        type:String,
+        required: true,
+
+
     },
     roomId: {
         type: mongoose.Schema.Types.ObjectId,

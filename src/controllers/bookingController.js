@@ -6,7 +6,7 @@ export const createBooking = async (req, res) => {
         const bookingId = await generateBookingId(); 
      
         const {
-                email,
+                
                 roomId,
                 checkInDate,
                 checkOutDate,
@@ -15,7 +15,8 @@ export const createBooking = async (req, res) => {
                 notes,
                 totalAmount
         } = req.body;
-
+       
+        const {email} = req.user
 
         try{
 
@@ -29,7 +30,7 @@ export const createBooking = async (req, res) => {
 
         const newBooking = new Booking({ 
                 bookingId,
-                email,
+                email: email,
                 roomId,
                 checkInDate,
                 checkOutDate,
@@ -58,3 +59,116 @@ export const createBooking = async (req, res) => {
           
        
 };
+
+
+
+
+export const getBookings = async (req, res) => {
+  try {
+    
+
+    const bookings = await Booking.find();
+
+    if (bookings.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: "No bookings found",
+        data: [],
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: bookings,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch bookings",
+      error: error.message,
+    });
+  }
+};
+
+
+
+export const getBookingbyId =async (req,res) =>{
+        try{
+               const booking = await Booking.findById(req.params.bookingId);
+               
+               if(!booking){
+                return res.status(404).json({
+                    success: false,
+                    message: "Booking not found",
+                });
+               }
+
+               res.status(200).json({
+                success: true,
+                data: booking,
+               });
+        }catch(error){
+            res.status(500).json({
+                success: false,
+                message: "Failed to fetch booking",
+                error: error.message,
+            });
+        }
+}
+
+
+export const updateBooking =async (req,res) =>{
+    try{
+        const booking = await Booking.findById(req.params.bookingId);
+        if(!booking){
+            return res.status(404).json({
+                success: false,
+                message: "Booking not found",
+            });
+        }
+        booking.roomId = req.body.roomId || booking.roomId;
+        booking.checkInDate = req.body.checkInDate || booking.checkInDate;
+        booking.checkOutDate = req.body.checkOutDate || booking.checkOutDate;
+        booking.status = req.body.status || booking.status;
+        booking.reason = req.body.reason || booking.reason;
+        booking.notes = req.body.notes || booking.notes;
+        booking.totalAmount = req.body.totalAmount || booking.totalAmount;
+
+        const updatedBooking = await booking.save();
+        res.status(200).json({
+            success: true,
+            message: "Booking updated successfully",
+            data: updatedBooking,
+        });
+    }catch(error){
+        res.status(500).json({
+            success: false,
+            message: "Failed to update booking",
+            error: error.message,
+        });
+    }
+}
+
+
+export const deleteBooking =async (req,res) =>{ 
+    try{
+        const booking = await Booking.findById(req.params.bookingId);
+        if(!booking){
+            return res.status(404).json({
+                success: false,
+                message: "Booking not found",
+            });
+        }
+        await booking.remove();
+        res.status(200).json({
+            success: true,
+            message: "Booking deleted successfully",
+        });
+    }catch(error){
+        res.status(500).json({
+            success: false,
+            message: "Failed to delete booking",
+            error: error.message,
+        });
+    }
+}
