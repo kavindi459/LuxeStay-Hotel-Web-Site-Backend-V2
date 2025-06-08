@@ -223,3 +223,22 @@ export const deleteUser =async (req, res) => {
     });
   }
 }
+
+
+export const getUserprofile = async (req, res) => {
+  const user = req.user; 
+  
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found",
+    });
+  } else {
+    return res.status(200).json({
+      success: true,
+      message: "User found",
+      data: user,
+    });
+  }
+};

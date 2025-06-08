@@ -1,5 +1,5 @@
 import express from "express";
-import { createUser, deleteUser, getUser, getUserById, loginUser, updateUser } from "../controllers/usersController.js";
+import { createUser, deleteUser, getUser, getUserById, getUserprofile, loginUser, updateUser } from "../controllers/usersController.js";
 import { adminProtect, protect } from "../middlewares/authMiddleware.js";
 
 
@@ -21,6 +21,8 @@ userRouter.put("/update/:UserId",protect, updateUser);
 userRouter.delete("/delete/:UserId",protect,adminProtect, deleteUser);
 
 userRouter.get("/get/:UserId",protect, getUserById);
+
+userRouter.get("/getuserprofile",protect, getUserprofile);
 
 
 
