@@ -74,7 +74,7 @@ export const getCategories =async (req, res) => {
 
 export const updateCategory =async (req, res) => {
     try {
-        const category = await Category.findById(req.params.categoryId);   
+        const category = await Category.findById(req.params.CategoryId);   
         
         if (!category) {
             return res.status(404).json({
