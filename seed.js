@@ -36,6 +36,7 @@ const categories = [
     description: "A comfortable and well-appointed room perfect for solo travelers or couples. Features modern amenities and a cozy atmosphere for a relaxing stay.",
     features: ["Free Wi-Fi", "Air Conditioning", "Flat-screen TV", "Mini Fridge", "24/7 Room Service"],
     image: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&auto=format&fit=crop",
+    isFeatured: true,
   },
   {
     name: "Deluxe Room",
@@ -43,6 +44,7 @@ const categories = [
     description: "An upgraded room with premium furnishings, a city view, and enhanced amenities. Ideal for guests who want a little extra comfort and style.",
     features: ["Free Wi-Fi", "Air Conditioning", "Smart TV", "Mini Bar", "City View", "Bathtub", "24/7 Room Service"],
     image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&auto=format&fit=crop",
+    isFeatured: true,
   },
   {
     name: "Junior Suite",
@@ -50,6 +52,7 @@ const categories = [
     description: "A spacious suite with a separate living area, offering a luxurious retreat. Features premium bedding, a large bathroom, and stunning views.",
     features: ["Free Wi-Fi", "Air Conditioning", "Smart TV", "Full Mini Bar", "Ocean/Garden View", "Jacuzzi", "Living Area", "Complimentary Breakfast"],
     image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&auto=format&fit=crop",
+    isFeatured: true,
   },
   {
     name: "Executive Suite",
@@ -57,6 +60,7 @@ const categories = [
     description: "Our finest accommodation with a private lounge, butler service, and panoramic views. Designed for the most discerning guests seeking unparalleled luxury.",
     features: ["Free Wi-Fi", "Air Conditioning", "Home Theatre", "Full Bar", "Panoramic View", "Private Jacuzzi", "Separate Living & Dining", "Butler Service", "Complimentary Breakfast & Dinner"],
     image: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&auto=format&fit=crop",
+    isFeatured: true,
   },
   {
     name: "Family Room",
@@ -64,6 +68,7 @@ const categories = [
     description: "Spacious and family-friendly room with extra beds and amenities tailored for families. Enjoy a comfortable stay with your loved ones in a warm, welcoming environment.",
     features: ["Free Wi-Fi", "Air Conditioning", "Smart TV", "Mini Fridge", "Extra Beds", "Kids Amenities", "Garden View", "24/7 Room Service"],
     image: "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=800&auto=format&fit=crop",
+    isFeatured: true,
   },
 ];
 
@@ -93,31 +98,82 @@ const roomsPerCategory = [
   ]},
 ];
 
+// photoSets[categoryIndex][roomIndex] = array of 3 photos for that specific room
 const photoSets = [
+  // Standard Room — 3 rooms, each with different photos
   [
-    "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=800&auto=format&fit=crop",
+    [
+      "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=800&auto=format&fit=crop",
+    ],
+    [
+      "https://images.unsplash.com/photo-1505693314120-0d443867891c?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=800&auto=format&fit=crop",
+    ],
+    [
+      "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1556020685-ae41abfc9365?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=800&auto=format&fit=crop",
+    ],
   ],
+  // Deluxe Room — 3 rooms
   [
-    "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1602002418082-a4443e081dd1?w=800&auto=format&fit=crop",
+    [
+      "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1602002418082-a4443e081dd1?w=800&auto=format&fit=crop",
+    ],
+    [
+      "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1549294413-26f195200c16?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1587985064135-0366536eab42?w=800&auto=format&fit=crop",
+    ],
+    [
+      "https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1631049552057-403cdb8f0658?w=800&auto=format&fit=crop",
+    ],
   ],
+  // Junior Suite — 2 rooms
   [
-    "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&auto=format&fit=crop",
+    [
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&auto=format&fit=crop",
+    ],
+    [
+      "https://images.unsplash.com/photo-1578898887932-dce23a595ad4?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1507652313519-d4e9174996dd?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop",
+    ],
   ],
+  // Executive Suite — 2 rooms
   [
-    "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1549294413-26f195200c16?w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1631049552057-403cdb8f0658?w=800&auto=format&fit=crop",
+    [
+      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1549294413-26f195200c16?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1631049552057-403cdb8f0658?w=800&auto=format&fit=crop",
+    ],
+    [
+      "https://images.unsplash.com/photo-1591088398332-8596b3462b4e?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&auto=format&fit=crop",
+    ],
   ],
+  // Family Room — 2 rooms
   [
-    "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&auto=format&fit=crop",
+    [
+      "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&auto=format&fit=crop",
+    ],
+    [
+      "https://images.unsplash.com/photo-1584466977773-e625c37cdd50?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=800&auto=format&fit=crop",
+    ],
   ],
 ];
 
@@ -324,7 +380,7 @@ const seed = async () => {
           category: cat._id,
           maxGuests,
           availability: true,
-          photos: photoSets[i],
+          photos: photoSets[i][j],
           description: descriptions[j],
         });
         roomCount++;

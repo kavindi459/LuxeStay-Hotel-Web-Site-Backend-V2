@@ -22,9 +22,13 @@ const categorySchema = new mongoose.Schema({
     },
     image :{
         type: String,
-        
+
+    },
+    isFeatured: {
+        type: Boolean,
+        default: false,
     }
-   
+
 }
 , {
     timestamps: true

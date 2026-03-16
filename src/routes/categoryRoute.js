@@ -1,5 +1,5 @@
 import express from "express";
-import { createCategory, deleteCategory, getCategories, getCategoriesByName, getCategoryById, updateCategory } from "../controllers/categoryController.js";
+import { createCategory, deleteCategory, getCategories, getCategoriesByName, getCategoryById, updateCategory, toggleFeatured } from "../controllers/categoryController.js";
 import { adminProtect, protect } from "../middlewares/authMiddleware.js";
 import { upload } from "../utils/cloudinary.js";
 
@@ -15,6 +15,7 @@ categoryRouter.get("/getById/:CategoryId",protect , getCategoryById);
 
 categoryRouter.put("/update/:CategoryId",protect,adminProtect,upload.single("image"), updateCategory);
 
+categoryRouter.patch("/toggle-featured/:CategoryId", protect, adminProtect, toggleFeatured);
 categoryRouter.delete("/delete/:CategoryId",protect,adminProtect, deleteCategory);
 
 

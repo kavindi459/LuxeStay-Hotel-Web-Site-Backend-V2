@@ -51,22 +51,21 @@ export const createCategory =  async (req, res) => {
 
 export const getCategories = async (req, res) => {
   try {
-    // Query params: ?page=1&limit=10
-    const page = parseInt(req.query.page) || 1; // default = 1
-    const limit = parseInt(req.query.limit) || 2; // default = 10
-    const skip = (page - 1) * limit;
+    const page  = parseInt(req.query.page)  || 1;
+    const limit = parseInt(req.query.limit) || 2;
+    const skip  = (page - 1) * limit;
 
-    // Get total count for pagination info
-    const total = await Category.countDocuments();
+    const filter = {};
+    if (req.query.featured === 'true') filter.isFeatured = true;
 
-    // Fetch paginated categories
-    const categories = await Category.find().skip(skip).limit(limit);
+    const total      = await Category.countDocuments(filter);
+    const categories = await Category.find(filter).skip(skip).limit(limit);
 
     res.status(200).json({
       success: true,
       data: categories,
       pagination: {
-        totalItems: total, 
+        totalItems: total,
         currentPage: page,
         totalPages: Math.ceil(total / limit),
         pageSize: limit,
@@ -164,6 +163,28 @@ export const getCategoryById = async (req, res) => {
             message: "Failed to fetch category",
             error: error.message,
         });
+    }
+};
+
+
+export const toggleFeatured = async (req, res) => {
+    try {
+        const category = await Category.findById(req.params.CategoryId);
+
+        if (!category) {
+            return res.status(404).json({ success: false, message: "Category not found" });
+        }
+
+        category.isFeatured = !category.isFeatured;
+        await category.save();
+
+        res.status(200).json({
+            success: true,
+            message: `Category is now ${category.isFeatured ? 'featured' : 'unfeatured'}`,
+            data: { isFeatured: category.isFeatured },
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Failed to toggle featured", error: error.message });
     }
 };
 
