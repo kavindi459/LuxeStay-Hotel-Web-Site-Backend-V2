@@ -180,9 +180,11 @@ export const updateUser =async (req, res) => {
     user.lastName = req.body.lastName || user.lastName;
     user.email = req.body.email || user.email;
     user.phone = req.body.phone || user.phone;
-    user.profilePic = req.file ? req.file.path :user.profilePic;
+    user.profilePic = req.file ? req.file.path : user.profilePic;
     user.role = req.body.role || user.role;
-    user.password = await bcrypt.hash(req.body.password, 10);
+    if (req.body.password) {
+      user.password = await bcrypt.hash(req.body.password, 10);
+    }
 
     
    const updateUSer =await user.save();
