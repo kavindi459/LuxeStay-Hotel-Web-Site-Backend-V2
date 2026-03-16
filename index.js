@@ -24,10 +24,12 @@ connectDB();
 
 // CORS - allow requests from frontend origin
 // For production, replace with specific origin from env: origin: process.env.FRONTEND_URL
-app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:5173",
-  credentials: true,
-}));
+// app.use(cors({
+//   origin: process.env.FRONTEND_URL || "http://localhost:5173",
+//   credentials: true,
+// }));
+
+app.use(cors());
 
 // Middleware
 app.use(express.json({ limit: "10mb" }));
