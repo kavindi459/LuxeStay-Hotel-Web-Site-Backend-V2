@@ -86,7 +86,7 @@ export const getRoomId =async(req, res) =>{
 
 export const updateRoom = async (req, res) => {
     try {
-        const room = await Room.findById(req.params.roomId);
+        const room = await Room.findById(req.params.RoomId);
 
         if (!room) {
             return res.status(404).json({
@@ -95,7 +95,7 @@ export const updateRoom = async (req, res) => {
             });
         }
 
-       
+
         room.roomID = req.body.roomID ?? room.roomID;
         room.category = req.body.category ?? room.category;
         room.maxGuests = req.body.maxGuests ?? room.maxGuests;
@@ -121,7 +121,7 @@ export const updateRoom = async (req, res) => {
 
 export const deleteRoom =async(req, res) =>{
     try{
-        const room =await Room.findByIdAndDelete(req.params.roomId);
+        const room =await Room.findByIdAndDelete(req.params.RoomId);
 
         if(!room){
             return res.status(404).json({
