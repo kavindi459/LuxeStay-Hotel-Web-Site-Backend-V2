@@ -6,8 +6,8 @@ export const createGalleryItem =async (req, res) => {
   try {
     const galleryItem = await Gallary.create({
       name,
-      description,
-      image:req.file ? req.file.path : null,
+      description: description || "",
+      image: req.file ? req.file.path : image,
     });
     res.status(201).json({
       success: true,

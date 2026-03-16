@@ -75,7 +75,11 @@ export const createBooking = async (req, res) => {
 
 export const getBookings = async (req, res) => {
     try {
-        const bookings = await Booking.find();
+        const bookings = await Booking.find().populate({
+            path: 'roomId',
+            select: 'roomID photos category',
+            populate: { path: 'category', select: 'name price image' }
+        }).sort({ createdAt: -1 });
 
         if (bookings.length === 0) {
             return res.status(200).json({
