@@ -1,6 +1,6 @@
 import express from "express";
 import { protect } from "../middlewares/authMiddleware.js";
-import { createRoom, deleteRoom, getRoomByCategory, getRoomId, getRooms, updateRoom, getAvailableRooms } from "../controllers/roomController.js";
+import { createRoom, deleteRoom, getRoomByCategory, getRoomId, getRooms, updateRoom, getAvailableRooms, toggleRoomStatus } from "../controllers/roomController.js";
 
 const roomRouter = express.Router();
 
@@ -17,6 +17,8 @@ roomRouter.get("/getByCategory/:CategoryId", getRoomByCategory);
 
 
 roomRouter.put("/update/:RoomId",protect, updateRoom);
+
+roomRouter.patch("/toggle-status/:RoomId", protect, toggleRoomStatus);
 
 
 

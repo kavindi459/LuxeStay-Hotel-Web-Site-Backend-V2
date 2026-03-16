@@ -169,6 +169,35 @@ export const getRoomByCategory = async (req, res) => {
 };
 
 
+export const toggleRoomStatus = async (req, res) => {
+    try {
+        const room = await Room.findById(req.params.RoomId);
+
+        if (!room) {
+            return res.status(404).json({
+                success: false,
+                message: "Room not found",
+            });
+        }
+
+        room.availability = !room.availability;
+        await room.save();
+
+        res.status(200).json({
+            success: true,
+            message: `Room is now ${room.availability ? 'available' : 'occupied'}`,
+            data: { availability: room.availability },
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to update room status",
+            error: error.message,
+        });
+    }
+};
+
+
 export const getAvailableRooms = async (req, res) => {
     try {
         const { checkIn, checkOut, guests, category } = req.query;
