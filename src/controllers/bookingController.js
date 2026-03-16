@@ -2,7 +2,10 @@ import mongoose from 'mongoose';
 import Booking from "../models/bookingModel.js";
 import generateBookingId from "../utils/generateBookingId.js";
 import Room from "../models/roomModel.js";
+import Stripe from "stripe";
 import { sendBookingConfirmationEmail, sendBookingStatusEmail } from "../services/emailService.js";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 
 export const createBooking = async (req, res) => {
@@ -252,7 +255,26 @@ export const createBookingByRooms = async (req, res) => {
             reason,
             notes,
             totalAmount,
+            paymentMethod,
+            paymentIntentId,
         } = req.body;
+
+        // 💳 Step 8b: If online payment, verify PaymentIntent is succeeded
+        if (paymentMethod === "online") {
+            if (!paymentIntentId) {
+                return res.status(400).json({
+                    success: false,
+                    message: "paymentIntentId is required for online payment",
+                });
+            }
+            const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+            if (paymentIntent.status !== "succeeded") {
+                return res.status(400).json({
+                    success: false,
+                    message: "Payment has not been completed. Please complete your payment first.",
+                });
+            }
+        }
 
         const { email } = req.user; // 🔐 Assuming req.user is filled from JWT or session
 
@@ -277,16 +299,35 @@ export const createBookingByRooms = async (req, res) => {
             roomId: roomToBook._id,
             checkInDate: reqCheckInDate,
             checkOutDate: reqCheckOutDate,
-            status,
+            status: "pending",
             reason,
             notes,
             totalAmount,
+            paymentMethod: paymentMethod || "pay_at_hotel",
+            paymentStatus: paymentMethod === "online" ? "paid" : "pending",
+            paymentIntentId: paymentIntentId || "",
         });
 
         // 💾 Step 11: Save booking to database
         await newBooking.save();
 
-        // 🎉 Step 12: Send success response
+        // ✉️ Step 12: Send booking request confirmation email
+        try {
+            const nights = Math.ceil((new Date(reqCheckOutDate) - new Date(reqCheckInDate)) / (1000 * 60 * 60 * 24));
+            await sendBookingConfirmationEmail(email, {
+                bookingId,
+                roomName: roomToBook.roomID ? `Room #${roomToBook.roomID}` : "Your Room",
+                checkInDate: reqCheckInDate,
+                checkOutDate: reqCheckOutDate,
+                totalAmount,
+                nights,
+                guestName: email,
+            });
+        } catch (emailErr) {
+            console.error("Failed to send booking confirmation email:", emailErr.message);
+        }
+
+        // 🎉 Step 13: Send success response
         return res.status(201).json({
             success: true,
             message: "Booking created successfully",
@@ -353,6 +394,104 @@ export const cancelBooking = async (req, res) => {
 
         booking.status = "cancelled";
         booking.reason = req.body.reason || "Cancelled by user";
+
+        // If paid online, mark payment as refunded (manual refund — admin handles actual Stripe refund)
+        if (booking.paymentMethod === "online" && booking.paymentStatus === "paid") {
+            booking.paymentStatus = "refunded";
+        }
+
+        await booking.save();
+
+        try {
+            await sendBookingStatusEmail(booking.email, booking, "cancelled");
+        } catch (emailErr) {
+            console.error("Failed to send cancellation email:", emailErr.message);
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Booking cancelled successfully",
+            data: booking,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Failed to cancel booking",
+            error: error.message,
+        });
+    }
+};
+
+
+// Admin: Confirm a booking and send confirmation email
+export const confirmBooking = async (req, res) => {
+    try {
+        const booking = await Booking.findById(req.params.bookingId);
+
+        if (!booking) {
+            return res.status(404).json({
+                success: false,
+                message: "Booking not found",
+            });
+        }
+
+        if (booking.status !== "pending") {
+            return res.status(400).json({
+                success: false,
+                message: "Only pending bookings can be confirmed",
+            });
+        }
+
+        booking.status = "confirmed";
+        await booking.save();
+
+        try {
+            await sendBookingStatusEmail(booking.email, booking, "confirmed");
+        } catch (emailErr) {
+            console.error("Failed to send confirmation email:", emailErr.message);
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Booking confirmed successfully",
+            data: booking,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Failed to confirm booking",
+            error: error.message,
+        });
+    }
+};
+
+
+// Admin: Cancel a booking with reason and send cancellation email
+export const adminCancelBooking = async (req, res) => {
+    try {
+        const booking = await Booking.findById(req.params.bookingId);
+
+        if (!booking) {
+            return res.status(404).json({
+                success: false,
+                message: "Booking not found",
+            });
+        }
+
+        if (booking.status === "cancelled") {
+            return res.status(400).json({
+                success: false,
+                message: "Booking is already cancelled",
+            });
+        }
+
+        booking.status = "cancelled";
+        booking.reason = req.body.reason || "Cancelled by hotel";
+
+        if (booking.paymentMethod === "online" && booking.paymentStatus === "paid") {
+            booking.paymentStatus = "refunded";
+        }
+
         await booking.save();
 
         try {

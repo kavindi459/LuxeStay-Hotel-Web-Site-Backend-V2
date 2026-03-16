@@ -15,6 +15,7 @@ import adminRouter from "./src/routes/adminRoute.js";
 import contactRouter from "./src/routes/contactRoute.js";
 import bgImageRouter from "./src/routes/bgImageRoute.js";
 import destinationRouter from "./src/routes/destinationRoute.js";
+import paymentRouter from "./src/routes/paymentRoute.js";
 
 dotenv.config();
 const app = express();
@@ -43,6 +44,7 @@ app.use("/api/admin", adminRouter);
 app.use("/api/contact", contactRouter);
 app.use("/api/bgimage", bgImageRouter);
 app.use("/api/destination", destinationRouter);
+app.use("/api/payment", paymentRouter);
 
 // Health check route
 app.get("/api/health", (req, res) => {

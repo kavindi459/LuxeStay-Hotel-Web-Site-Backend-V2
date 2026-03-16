@@ -49,9 +49,23 @@ const bookingSchema = new mongoose.Schema({
     totalAmount: {
         type: Number,
         required: true
+    },
+    paymentMethod: {
+        type: String,
+        enum: ["online", "pay_at_hotel"],
+        default: "pay_at_hotel"
+    },
+    paymentStatus: {
+        type: String,
+        enum: ["pending", "paid", "refunded", "failed"],
+        default: "pending"
+    },
+    paymentIntentId: {
+        type: String,
+        default: ""
     }
 
-    
+
 }, {
     timestamps: true
 }
