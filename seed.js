@@ -422,6 +422,7 @@ const seed = async () => {
     console.log(`  BG Images   : ${insertedBgImages.length} images`);
     console.log(`  Destinations: ${insertedDestinations.length}`);
     console.log("═".repeat(45));
+    
 
   } catch (err) {
     console.error("❌ Seed failed:", err.message);
